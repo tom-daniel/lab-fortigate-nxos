@@ -17,7 +17,7 @@ resource "nxos_physical_interface" "wan-downlink-1" {
   admin_state  = "up"
   description  = "FortiGate WAN"
   mode         = "trunk"
-  trunk_vlans  = "2000-2100"
+  trunk_vlans  = "100,2000-2100"
 
 }
 
@@ -28,35 +28,8 @@ resource "nxos_physical_interface" "wan-uplink-1" {
   admin_state  = "up"
   description  = "WAN"
   mode         = "trunk"
-  trunk_vlans  = "2000-2100"
+  trunk_vlans  = "100,2000-2100"
 
-}
-
-
-resource "fortios_system_interface" "interface-abc-a" {
-  defaultgw     = "enable"
-  ip            = "10.200.0.2 255.255.255.252"
-  mode          = "static"
-  name          = "abc-a"
-  interface     = "port5"
-  vlan_protocol = "8021q"
-  vlanid        = 2000
-  vdom          = "root"
-  description   = "Created by Terraform Provider for FortiOS"
-  allowaccess   = "ping"
-}
-
-resource "fortios_system_interface" "interface-abc-b" {
-  defaultgw     = "enable"
-  ip            = "10.200.0.130 255.255.255.252"
-  mode          = "static"
-  name          = "abc-b"
-  interface     = "port6"
-  vlan_protocol = "8021q"
-  vlanid        = 2000
-  vdom          = "root"
-  description   = "Created by Terraform Provider for FortiOS"
-  allowaccess   = "ping"
 }
 
 
@@ -67,15 +40,21 @@ resource "fortios_router_bgp" "fortigate-bgp" {
   neighbor_group {
     name = "abc-a"
     activate = "enable"
-    #interface = "abc-a"
     remote_as = 100
+    prefix_list_in = fortios_router_prefixlist.abc-prefix-list-allowed-in.name
+    prefix_list_out = fortios_router_prefixlist.abc-prefix-list-allowed-out.name
+    interface = fortios_system_interface.interface-abc-a.name
+    update_source = fortios_system_interface.interface-abc-a.name
   }
 
   neighbor_group {
     name = "abc-b"
     activate = "enable"
-    #interface = "abc-b"
     remote_as = 100
+    prefix_list_in = fortios_router_prefixlist.abc-prefix-list-allowed-in.name
+    prefix_list_out = fortios_router_prefixlist.abc-prefix-list-allowed-out.name
+    interface = fortios_system_interface.interface-abc-b.name
+    update_source = fortios_system_interface.interface-abc-b.name
   }
 
   neighbor_range {
@@ -87,4 +66,35 @@ resource "fortios_router_bgp" "fortigate-bgp" {
     prefix = "10.200.0.128/25"
     neighbor_group = "abc-b"
   }
+
+  #vrf leakingConfig for old fortigates
+  vrf_leak {
+    vrf = 1
+    target {
+      vrf = 2
+      route_map = fortios_router_routemap.route-map-leak-001-to-002.name
+      interface = fortios_system_interface.v-001-002-0.name
+    }
+  }
+
+    vrf_leak {
+    vrf = 2
+    target {
+      vrf = 1
+      route_map = fortios_router_routemap.route-map-leak-002-to-001.name
+      interface = fortios_system_interface.v-001-002-1.name
+    }
+  }
+
+  #vrf leakingConfig for new fortigates
+  #vrf {
+  #  vrf = 1
+  #  leak_target {
+  #    vrf = 2
+  #    route_map = fortios_router_routemap.route-map-leak-001-to-002.name
+  #    interface = fortios_system_interface.v-001-002-0.name
+  #  }
+  #}
 }
+
+
