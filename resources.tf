@@ -1,5 +1,11 @@
-resource "nxos_system" "nxos-system-settings" {
-  for_each = toset([for torswitch in local.torswitches : torswitch.name])
+resource "nxos_system" "leaf-switch-nxos-system-settings" {
+  for_each = toset([for leafswitch in local.leafswitches : leafswitch.name])
+  device   = each.key
+  name     = each.value
+}
+
+resource "nxos_system" "spine-switch-nxos-system-settings" {
+  for_each = toset([for spineswitch in local.spineswitches : spineswitch.name])
   device   = each.key
   name     = each.value
 }

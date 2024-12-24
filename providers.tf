@@ -8,6 +8,6 @@ provider "fortios" {
 provider "nxos" {
   username = "admin"
   password = var.nxos_password
-  devices  = concat(local.torswitches, local.edgeswitches)
+  devices  = concat(local.torswitches, local.edgeswitches, local.spineswitches, local.leafswitches)
 }
 
