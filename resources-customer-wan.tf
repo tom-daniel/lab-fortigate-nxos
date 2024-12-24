@@ -9,7 +9,7 @@ resource "fortios_system_interface" "interface-abc-a" {
   vdom          = "root"
   description   = "Created by Terraform Provider for FortiOS"
   allowaccess   = "ping"
-  vrf = 2
+  vrf           = 2
 }
 
 resource "fortios_system_interface" "interface-abc-b" {
@@ -23,7 +23,7 @@ resource "fortios_system_interface" "interface-abc-b" {
   vdom          = "root"
   description   = "Created by Terraform Provider for FortiOS"
   allowaccess   = "ping"
-  vrf = 2
+  vrf           = 2
 }
 
 resource "fortios_system_zone" "abc-zone" {
@@ -42,7 +42,7 @@ resource "fortios_router_prefixlist" "abc-prefix-list-allowed-in" {
   rule {
     action = "permit"
     prefix = "172.30.100.0 255.255.255.0"
-    le = "32" 
+    le     = "32"
   }
 }
 
@@ -51,6 +51,6 @@ resource "fortios_router_prefixlist" "abc-prefix-list-allowed-out" {
   rule {
     action = "deny"
     prefix = "0.0.0.0 0.0.0.0"
-    le = "32" 
+    le     = "32"
   }
 }

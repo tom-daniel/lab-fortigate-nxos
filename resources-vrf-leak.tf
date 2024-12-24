@@ -4,7 +4,7 @@ resource "fortios_system_vdomlink" "v-001-002-" {
 
 resource "fortios_system_interface" "v-001-002-0" {
   vrf = 1
-  ip            = "10.254.102.1 255.255.255.252"
+  ip  = "10.254.102.1 255.255.255.252"
   #interface = fortios_system_vdomlink.v-001-002-.name
   name          = "v-001-002-0"
   vdom          = "root"
@@ -14,7 +14,7 @@ resource "fortios_system_interface" "v-001-002-0" {
 
 resource "fortios_system_interface" "v-001-002-1" {
   vrf = 2
-  ip            = "10.254.102.2 255.255.255.252"
+  ip  = "10.254.102.2 255.255.255.252"
   #interface = fortios_system_vdomlink.v-001-002-.name
   name          = "v-001-002-1"
   vdom          = "root"
@@ -36,22 +36,22 @@ resource "fortios_router_prefixlist" "ia-prefix-list-leak-non-rfc1918" {
   rule {
     action = "deny"
     prefix = "10.0.0.0 255.0.0.0"
-    le = 32
+    le     = 32
   }
   rule {
     action = "deny"
     prefix = "172.16.0.0 255.240.0.0"
-    le = 32
+    le     = 32
   }
   rule {
     action = "deny"
     prefix = "192.168.0.0 255.255.0.0"
-    le = 32
+    le     = 32
   }
   rule {
     action = "permit"
     prefix = "0.0.0.0 0.0.0.0"
-    le = 32
+    le     = 32
   }
 }
 

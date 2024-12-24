@@ -18,8 +18,8 @@ resource "nxos_feature_lacp" "feature-lacp" {
 
 
 resource "nxos_save_config" "wr" {
-  for_each    = toset([for torswitch in local.torswitches : torswitch.name])
-  device      = each.key
+  for_each = toset([for torswitch in local.torswitches : torswitch.name])
+  device   = each.key
 }
 
 resource "fortios_system_settings" "fortigate-system-settings" {
